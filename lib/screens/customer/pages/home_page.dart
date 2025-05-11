@@ -1,9 +1,7 @@
-
-
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
-   const HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +27,7 @@ class HomePage extends StatelessWidget {
                       ),
                       Text(
                         "Find services near you",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       ),
                     ],
                   ),
@@ -46,8 +41,7 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 24),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.grey.shade200),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -62,10 +56,7 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 24),
               const Text(
                 "Categories",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -73,9 +64,15 @@ class HomePage extends StatelessWidget {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    _buildCategoryItem("Cleaning", Icons.cleaning_services_outlined),
+                    _buildCategoryItem(
+                      "Cleaning",
+                      Icons.cleaning_services_outlined,
+                    ),
                     _buildCategoryItem("Plumbing", Icons.plumbing_outlined),
-                    _buildCategoryItem("Electrical", Icons.electrical_services_outlined),
+                    _buildCategoryItem(
+                      "Electrical",
+                      Icons.electrical_services_outlined,
+                    ),
                     _buildCategoryItem("Tutoring", Icons.school_outlined),
                     _buildCategoryItem("Moving", Icons.local_shipping_outlined),
                     _buildCategoryItem("Gardening", Icons.yard_outlined),
@@ -88,15 +85,9 @@ class HomePage extends StatelessWidget {
                 children: [
                   const Text(
                     "Popular Services",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text("See All"),
-                  ),
+                  TextButton(onPressed: () {}, child: const Text("See All")),
                 ],
               ),
               const SizedBox(height: 8),
@@ -155,20 +146,13 @@ class HomePage extends StatelessWidget {
               color: const Color(0xFF4A80F0).withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              icon,
-              color: const Color(0xFF4A80F0),
-              size: 28,
-            ),
+            child: Icon(icon, color: const Color(0xFF4A80F0), size: 28),
           ),
           const SizedBox(height: 8),
           Text(
             title,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
           ),
         ],
       ),
@@ -213,11 +197,7 @@ class HomePage extends StatelessWidget {
                 color: const Color(0xFF4A80F0).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                icon,
-                color: const Color(0xFF4A80F0),
-                size: 28,
-              ),
+              child: Icon(icon, color: const Color(0xFF4A80F0), size: 28),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -234,19 +214,12 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     description,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 16,
-                      ),
+                      const Icon(Icons.star, color: Colors.amber, size: 16),
                       const SizedBox(width: 4),
                       Text(
                         rating,
@@ -264,10 +237,7 @@ class HomePage extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         "5.2 miles",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                       ),
                     ],
                   ),

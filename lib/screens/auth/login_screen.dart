@@ -3,8 +3,10 @@ import '../../constants/app_colors.dart';
 import '../../widgets/custom_button.dart';
 
 class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
+
   final _formKey = GlobalKey<FormState>();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,12 +58,15 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 40),
-                  
+
                   // Email Field
                   TextFormField(
                     decoration: InputDecoration(
                       hintText: "Email",
-                      prefixIcon: Icon(Icons.email_outlined, color: AppColors.textLight),
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: AppColors.textLight,
+                      ),
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
@@ -72,13 +77,19 @@ class LoginScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: 16),
-                  
+
                   // Password Field
                   TextFormField(
                     decoration: InputDecoration(
                       hintText: "Password",
-                      prefixIcon: Icon(Icons.lock_outline, color: AppColors.textLight),
-                      suffixIcon: Icon(Icons.visibility_off_outlined, color: AppColors.textLight),
+                      prefixIcon: Icon(
+                        Icons.lock_outline,
+                        color: AppColors.textLight,
+                      ),
+                      suffixIcon: Icon(
+                        Icons.visibility_off_outlined,
+                        color: AppColors.textLight,
+                      ),
                     ),
                     obscureText: true,
                     validator: (value) {
@@ -89,7 +100,7 @@ class LoginScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: 12),
-                  
+
                   // Forgot Password
                   Align(
                     alignment: Alignment.centerRight,
@@ -105,18 +116,21 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 24),
-                  
+
                   // Login Button
                   CustomButton(
                     text: "Login",
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.pushReplacementNamed(context, '/customer-home');
+                        Navigator.pushReplacementNamed(
+                          context,
+                          '/customer-home',
+                        );
                       }
                     },
                   ),
                   SizedBox(height: 24),
-                  
+
                   // Or divider
                   Row(
                     children: [
@@ -135,7 +149,7 @@ class LoginScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 24),
-                  
+
                   // Sign Up Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
