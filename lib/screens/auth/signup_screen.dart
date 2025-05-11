@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:near_fix/services/auth__service.dart';
 import '../../constants/app_colors.dart';
 import '../../widgets/custom_button.dart';
 
@@ -10,7 +11,40 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _userType = 'customer'; // Default value
+ final TextEditingController _nameController = TextEditingController();
+ final TextEditingController _emailController = TextEditingController();
+ final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  String _userType = 'customer';
+  bool isLoading = false;
+
+  Future<void> _signup()async{
+    try{
+      if(!_formKey.currentState!.validate()) {
+        return;
+      }
+      setState(() {
+        isLoading = true;
+      });
+      await AuthService().signUp(
+        _emailController.text,
+        _passwordController.text,
+        _userType == 'customer',
+        _phoneController.text,
+      );
+      String userId = AuthService().getUserId()!;
+      
+      if (_userType == 'customer') {
+        Navigator.pushReplacementNamed(context, '/customer-home');
+      } else {
+        Navigator.pushReplacementNamed(context, '/provider-home');
+      }
+    } catch (e) {
+      // Handle error
+      print('Signup error: $e');
+    }
+
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -119,6 +153,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   
                   // Name Field
                   TextFormField(
+                    controller: _nameController,
+                    onChanged: (value) {
+                      _nameController.text = value;
+                    },
                     decoration: InputDecoration(
                       hintText: "Full Name",
                       prefixIcon: Icon(Icons.person_outline, color: AppColors.textLight),
@@ -134,6 +172,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   
                   // Email Field
                   TextFormField(
+                    controller: _emailController,
+                    onChanged: (value) {
+                      _emailController.text = value;
+                    },
                     decoration: InputDecoration(
                       hintText: "Email",
                       prefixIcon: Icon(Icons.email_outlined, color: AppColors.textLight),
@@ -150,6 +192,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   
                   // Phone Field
                   TextFormField(
+                    controller: _phoneController,
+                    onChanged: (value) {
+                      _phoneController.text = value;
+                    },
                     decoration: InputDecoration(
                       hintText: "Phone Number",
                       prefixIcon: Icon(Icons.phone_outlined, color: AppColors.textLight),
@@ -166,6 +212,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   
                   // Password Field
                   TextFormField(
+                    controller: _passwordController,
+                    onChanged: (value) {
+                      _passwordController.text = value;
+                    },
                     decoration: InputDecoration(
                       hintText: "Password",
                       prefixIcon: Icon(Icons.lock_outline, color: AppColors.textLight),
@@ -182,16 +232,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   SizedBox(height: 32),
                   
                   // Signup Button
-                  CustomButton(
+                 isLoading?CircularProgressIndicator(): CustomButton(
                     text: "Create Account",
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        if (_userType == 'customer') {
-                          Navigator.pushReplacementNamed(context, '/customer-home');
-                        } else {
-                          Navigator.pushReplacementNamed(context, '/provider-home');
-                        }
-                      }
+                      _signup();
                     },
                   ),
                   SizedBox(height: 24),

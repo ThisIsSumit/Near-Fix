@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:near_fix/screens/customer/pages/explore_service_page.dart';
-import 'package:near_fix/screens/customer/pages/home_page.dart';
+import 'package:near_fix/screens/customer/pages/customer_home_page.dart';
 
 class CustomerHomeScreen extends StatefulWidget {
   const CustomerHomeScreen({Key? key}) : super(key: key);

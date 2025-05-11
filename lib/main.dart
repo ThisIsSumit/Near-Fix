@@ -5,7 +5,7 @@ import 'screens/auth/signup_screen.dart';
 import 'constants/app_colors.dart';
 import 'screens/customer/customer_home_screen.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(NearFix());
@@ -59,7 +59,7 @@ class NearFix extends StatelessWidget {
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
       ),
-      initialRoute: '/customer-home',
+      initialRoute: '/login',
       routes: {
         '/login': (context) => LoginScreen(),
         '/signup': (context) => SignupScreen(),

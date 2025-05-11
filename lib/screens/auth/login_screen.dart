@@ -1,11 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:near_fix/models/user_model.dart';
+import 'package:near_fix/services/auth__service.dart';
+import 'package:near_fix/services/firestore_service.dart';
 import '../../constants/app_colors.dart';
 import '../../widgets/custom_button.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _emailController = TextEditingController();
+
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool isLoading = false;
+
+  Future<void> _login(BuildContext context) async {
+    try {
+      if (!_formKey.currentState!.validate()) {
+        return;
+      }
+      setState(() {
+        isLoading = true;
+      });
+      await AuthService().signIn(
+        _emailController.text,
+        _passwordController.text,
+      );
+      String userId = AuthService().getUserId()!;
+      UserModel user = await FirestoreService().getUser(userId);
+      setState(() {
+        isLoading = false;
+      });
+      if (user.isCustomer) {
+        Navigator.pushReplacementNamed(context, '/customer-home');
+      } else {
+        Navigator.pushReplacementNamed(context, '/provider-home');
+      }
+    } catch (e) {
+      // Handle error
+      print('Login error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +103,10 @@ class LoginScreen extends StatelessWidget {
 
                   // Email Field
                   TextFormField(
+                    controller: _emailController,
+                    onChanged: (value) {
+                      _emailController.text = value;
+                    },
                     decoration: InputDecoration(
                       hintText: "Email",
                       prefixIcon: Icon(
@@ -80,6 +126,10 @@ class LoginScreen extends StatelessWidget {
 
                   // Password Field
                   TextFormField(
+                    controller: _passwordController,
+                    onChanged: (value) {
+                      _passwordController.text = value;
+                    },
                     decoration: InputDecoration(
                       hintText: "Password",
                       prefixIcon: Icon(
@@ -118,17 +168,14 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(height: 24),
 
                   // Login Button
-                  CustomButton(
-                    text: "Login",
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          '/customer-home',
-                        );
-                      }
-                    },
-                  ),
+                  isLoading
+                      ? CircularProgressIndicator()
+                      : CustomButton(
+                        text: "Login",
+                        onPressed: () {
+                          _login(context);
+                        },
+                      ),
                   SizedBox(height: 24),
 
                   // Or divider

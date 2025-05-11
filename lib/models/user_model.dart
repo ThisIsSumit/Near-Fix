@@ -4,7 +4,7 @@ class UserModel {
   final String id;
   final String name;
   final String email;
-  final String? phone;
+  final String phoneNumber;
   final String? address;
   final String? profilePictureUrl;
   final bool isCustomer;
@@ -13,27 +13,29 @@ class UserModel {
   final double? latitude;
   final double? longitude;
   final double? rating;
+  String? serviceProvided;
 
   UserModel({
     required this.id,
     required this.name,
     required this.email,
-    this.phone,
+    required this.phoneNumber,
     this.address,
     this.profilePictureUrl,
     required this.isCustomer,
-     required this.bookings,
+    required this.bookings,
     this.latitude,
     this.longitude,
     this.rating,
-  }) ;
+    this.serviceProvided,
+  });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['id'] as String? ?? '',
       name: map['name'] as String? ?? '',
       email: map['email'] as String? ?? '',
-      phone: map['phone'] as String?,
+      phoneNumber: map['phoneNumber'],
       address: map['address'] as String?,
       profilePictureUrl: map['profilePictureUrl'] as String?,
       isCustomer: map['isCustomer'] as bool? ?? false,
@@ -45,6 +47,7 @@ class UserModel {
       latitude: map['latitude'] as double?,
       longitude: map['longitude'] as double?,
       rating: map['rating'] as double?,
+      serviceProvided: map['serviceProvided'] as String?,
     );
   }
 
@@ -53,7 +56,7 @@ class UserModel {
       'id': id,
       'name': name,
       'email': email,
-      'phone': phone,
+      'phoneNumber': phoneNumber,
       'address': address,
       'profilePictureUrl': profilePictureUrl,
       'isCustomer': isCustomer,
@@ -61,11 +64,7 @@ class UserModel {
       'latitude': latitude,
       'longitude': longitude,
       'rating': rating,
+      'serviceProvided': serviceProvided,
     };
-  }
-
-  @override
-  String toString() {
-    return 'UserModel{id: $id, name: $name, email: $email, phone: $phone, address: $address, profilePictureUrl: $profilePictureUrl, isCustomer: $isCustomer} , bookings: $bookings}';
   }
 }
