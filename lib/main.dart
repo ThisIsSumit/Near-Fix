@@ -1,11 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/signup_screen.dart';
 import 'constants/app_colors.dart';
 import 'screens/customer/customer_home_screen.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(NearFix());
 }
 
