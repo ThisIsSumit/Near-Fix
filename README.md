@@ -30,7 +30,7 @@ NearFix is a Flutter-based mobile application that allows users to book essentia
 
 | Service Detail | Bookings List | Booking Screen |
 |----------------|----------------|----------------|
-| ![Service Detail](https://github.com/user-attachments/assets/59078f7e-0d2a-4bfb-9b64-ee58e8b534ea) | ![Booking](https://github.com/user-attachments/assets/e817610e-9659-4462-bd59-284f3c9d7f2c) | ![Bookings](https://github.com/user-attachments/assets/59078f7e-0d2a-4bfb-9b64-ee58e8b534ea) |
+| ![Service Detail](https://github.com/user-attachments/assets/ce7187ae-3de1-4264-9606-427ca151cd41) | ![Booking](https://github.com/user-attachments/assets/e817610e-9659-4462-bd59-284f3c9d7f2c) | ![Bookings](https://github.com/user-attachments/assets/59078f7e-0d2a-4bfb-9b64-ee58e8b534ea) |
 
 
 
