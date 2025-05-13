@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class ExploreServicesPage extends StatelessWidget {
   const ExploreServicesPage({Key? key}) : super(key: key);
@@ -19,11 +21,9 @@ class ExploreServicesPage extends StatelessWidget {
               const SizedBox(height: 16),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade200),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+
                 child: const TextField(
                   decoration: InputDecoration(
                     hintText: "Search location...",
@@ -34,35 +34,42 @@ class ExploreServicesPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Container(
-                height: 300,
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12),
+                  color: const Color.fromARGB(255, 0, 191, 255),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade200),
                 ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.map, size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(
-                        "Map View",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "Map integration will be added here",
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                      ),
-                    ],
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height / 3,
+
+                child: FlutterMap(
+                  options: MapOptions(
+                    initialCenter: LatLng(37.7749, -122.4194),
                   ),
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      subdomains: ['a', 'b', 'c'],
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        Marker(
+                          width: 80.0,
+                          height: 80.0,
+                          point: LatLng(37.7749, -122.4194),
+                          child: Icon(
+                            Icons.location_on,
+                            color: Colors.blue,
+                            size: 40.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-
               const SizedBox(height: 16),
               const Text(
                 "Nearby Services",
@@ -105,16 +112,6 @@ class ExploreServicesPage extends StatelessWidget {
                           SizedBox(height: 4),
                           Row(
                             children: [
-                              Icon(Icons.star, color: Colors.amber, size: 16),
-                              SizedBox(width: 4),
-                              Text(
-                                "4.7",
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              SizedBox(width: 16),
                               Icon(
                                 Icons.location_on_outlined,
                                 color: Colors.grey,

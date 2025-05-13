@@ -4,14 +4,12 @@ import 'package:near_fix/models/user_model.dart';
 import 'package:near_fix/models/service_model.dart';
 import 'package:near_fix/models/booking_model.dart';
 
-
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   static const String _usersPath = 'users';
   static const String _servicesPath = 'services';
   static const String _bookingsPath = 'bookings';
-  
 
   Future<void> saveUser(UserModel user) async {
     try {
@@ -149,9 +147,6 @@ class FirestoreService {
       }
 
       final batch = _db.batch();
-
-   
-
 
       batch.delete(_db.collection(_servicesPath).doc(serviceId));
 
@@ -316,8 +311,6 @@ class FirestoreService {
     }
   }
 
-
-
   Future<Map<String, dynamic>> getDetailedBooking(String bookingId) async {
     try {
       final booking = await getBooking(bookingId);
@@ -344,8 +337,6 @@ class FirestoreService {
     }
   }
 
- 
-
   Future<Map<String, dynamic>> getServiceDetails(String serviceId) async {
     try {
       final service = await getService(serviceId);
@@ -353,8 +344,6 @@ class FirestoreService {
 
       final provider = await getUser(service.providerId);
       if (provider == null) throw Exception('Provider not found');
-
-     
 
       return {'service': service, 'provider': provider};
     } catch (e) {

@@ -91,13 +91,13 @@ class ProfileScreen extends StatelessWidget {
                             _buildProfileOption(
                               context,
                               "User Type ${user!.userType}",
-                              Icons.payment_outlined,
+                              Icons.verified_user_outlined,
                             ),
                             const Divider(height: 1, indent: 20, endIndent: 20),
                             _buildProfileOption(
                               context,
                               user!.phoneNumber,
-                              Icons.history_outlined,
+                              Icons.phone_outlined,
                             ),
                             const Divider(height: 1, indent: 20, endIndent: 20),
                           ],
