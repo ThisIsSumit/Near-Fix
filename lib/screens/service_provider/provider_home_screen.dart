@@ -17,7 +17,7 @@ class ProviderHomeScreen extends StatefulWidget {
 
 class _ProviderHomeScreenState extends State<ProviderHomeScreen> {
   int _selectedIndex = 0;
-  UserModel? provider = Dummydata().provider;
+  UserModel? provider = Dummydata.provider1;
   List<BookingModel> pendingRequests = [];
 
   List<BookingModel> confirmedRequests = [];

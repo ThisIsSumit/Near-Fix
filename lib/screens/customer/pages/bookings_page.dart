@@ -4,12 +4,12 @@ import 'package:near_fix/provider/dummydata.dart';
 import 'package:intl/intl.dart';
 
 class BookingsPage extends StatelessWidget {
-  const BookingsPage({Key? key}) : super(key: key);
+  BookingsPage({Key? key, required this.bookings}) : super(key: key);
+
+  final List<BookingModel> bookings;
 
   @override
   Widget build(BuildContext context) {
-    List<BookingModel> bookings = Dummydata.dummyBookings;
-
     return Scaffold(
       appBar: AppBar(title: const Text("My Bookings"), centerTitle: true),
       body: SafeArea(

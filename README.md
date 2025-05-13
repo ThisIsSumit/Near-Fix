@@ -21,7 +21,3 @@ NearFix is a Flutter-based mobile application that allows users to book essentia
 - **GeoPoint**: For storing location data of users/providers (optional future expansion)
 
 ---
-
-
-
-

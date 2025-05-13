@@ -67,8 +67,6 @@ class NearFix extends StatelessWidget {
         '/signup': (context) => SignupScreen(),
         '/customer-home': (context) => CustomerHomeScreen(),
         '/provider-home': (context) => ProviderHomeScreen(),
-
-        // '/map': (context) => MapScreen(),
       },
     );
   }

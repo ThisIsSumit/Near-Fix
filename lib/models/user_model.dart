@@ -11,6 +11,8 @@ class UserModel {
   final DateTime createdAt;
   final GeoPoint? coordinates;
 
+  List<String>? servicesIds = [];
+
   UserModel({
     required this.id,
     required this.fullName,
@@ -21,6 +23,7 @@ class UserModel {
     this.profileImageUrl,
     required this.createdAt,
     this.coordinates,
+    this.servicesIds,
   });
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
@@ -33,6 +36,7 @@ class UserModel {
       location: data['location'] ?? '',
       userType: data['userType'] ?? 'customer',
       profileImageUrl: data['profileImageUrl'],
+
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       coordinates: data['coordinates'],
     );

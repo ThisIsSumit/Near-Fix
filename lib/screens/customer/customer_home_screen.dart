@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:near_fix/models/booking_model.dart';
 import 'package:near_fix/models/user_model.dart';
 import 'package:near_fix/provider/dummydata.dart';
 import 'package:near_fix/screens/customer/pages/explore_service_page.dart';
@@ -17,7 +18,8 @@ class CustomerHomeScreen extends StatefulWidget {
 
 class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   int _selectedIndex = 0;
-  UserModel? user = Dummydata().customer;
+  UserModel? user = Dummydata.customer1;
+  List<BookingModel> bookings = [];
   Future<void> fetchUser() async {
     try {
       String userId = AuthService().getUserId()!;
@@ -34,7 +36,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
         _pages = [
           HomePage(),
           ExploreServicesPage(),
-          BookingsPage(),
+          BookingsPage(bookings: bookings),
           ProfileScreen(user: user),
         ];
       });
@@ -46,6 +48,18 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   // fetch user
 
   // bookings
+  Future<void> fetchBookings() async {
+    try {
+      String userId = user!.id;
+      bookings = await FirestoreService().getBookings(customerId: userId);
+      if (bookings == null || bookings.isEmpty) {
+        bookings = [];
+      }
+      setState(() {});
+    } catch (e) {
+      print("Error in fetching bookings $e");
+    }
+  }
 
   // fetch geopoint
 

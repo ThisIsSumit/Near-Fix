@@ -33,45 +33,6 @@ class FirestoreService {
     }
   }
 
-  Future<List<UserModel>> getUsersByType(String userType) async {
-    try {
-      final snapshot =
-          await _db
-              .collection(_usersPath)
-              .where('userType', isEqualTo: userType)
-              .get();
-
-      return snapshot.docs.map((doc) => UserModel.fromFirestore(doc)).toList();
-    } catch (e) {
-      _logError('getUsersByType', e);
-      rethrow;
-    }
-  }
-
-  Future<List<UserModel>> getNearbyProviders(
-    GeoPoint location,
-    double radiusInKm,
-  ) async {
-    try {
-      final providers = await getUsersByType('provider');
-
-      final degreePerKm = 0.01;
-      final latRange = radiusInKm * degreePerKm;
-      final lngRange = radiusInKm * degreePerKm;
-
-      return providers
-          .where(
-            (p) =>
-                p.coordinates != null &&
-                _isInRange(p.coordinates!, location, latRange, lngRange),
-          )
-          .toList();
-    } catch (e) {
-      _logError('getNearbyProviders', e);
-      rethrow;
-    }
-  }
-
   bool _isInRange(
     GeoPoint point,
     GeoPoint center,
@@ -153,24 +114,6 @@ class FirestoreService {
       await batch.commit();
     } catch (e) {
       _logError('deleteService', e);
-      rethrow;
-    }
-  }
-
-  Future<List<ServiceModel>> getProviderServices(String providerId) async {
-    try {
-      final snapshot =
-          await _db
-              .collection(_servicesPath)
-              .where('providerId', isEqualTo: providerId)
-              .orderBy('createdAt', descending: true)
-              .get();
-
-      return snapshot.docs
-          .map((doc) => ServiceModel.fromFirestore(doc))
-          .toList();
-    } catch (e) {
-      _logError('getProviderServices', e);
       rethrow;
     }
   }
@@ -320,10 +263,8 @@ class FirestoreService {
       if (service == null) throw Exception('Service not found');
 
       final provider = await getUser(booking.providerId);
-      if (provider == null) throw Exception('Provider not found');
 
       final customer = await getUser(booking.customerId);
-      if (customer == null) throw Exception('Customer not found');
 
       return {
         'booking': booking,
@@ -374,14 +315,11 @@ class FirestoreService {
         (sum, booking) => sum + booking.amount,
       );
 
-      final services = await getProviderServices(providerId);
-
       return {
         'pendingBookingsCount': pendingBookings.length,
         'confirmedBookingsCount': confirmedBookings.length,
         'completedBookingsCount': completedBookings.length,
         'totalEarnings': totalEarnings,
-        'servicesCount': services.length,
       };
     } catch (e) {
       _logError('getProviderDashboardData', e);

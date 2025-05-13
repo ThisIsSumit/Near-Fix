@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:near_fix/models/booking_model.dart';
 import 'package:near_fix/models/service_model.dart';
+import 'package:near_fix/models/user_model.dart';
+import 'package:near_fix/provider/dummydata.dart';
+import 'package:near_fix/services/auth__service.dart';
+import 'package:near_fix/services/firestore_service.dart';
+import 'package:uuid/uuid.dart';
 
 class BookingScreen extends StatefulWidget {
   final ServiceModel service;
@@ -18,7 +23,8 @@ class _BookingScreenState extends State<BookingScreen> {
 
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
-
+  bool isLoading = false;
+  @override
   IconData _getCategoryIcon(String category) {
     switch (category.toLowerCase()) {
       case 'cleaning':
@@ -60,7 +66,7 @@ class _BookingScreenState extends State<BookingScreen> {
     }
   }
 
-  void _confirmBooking() {
+  void _confirmBooking() async {
     if (selectedDate == null ||
         selectedTime == null ||
         _detailsController.text.isEmpty) {
@@ -69,8 +75,27 @@ class _BookingScreenState extends State<BookingScreen> {
       ).showSnackBar(const SnackBar(content: Text("Please fill all fields")));
       return;
     }
+    setState(() => isLoading = true);
 
-    // TODO: Save booking to Firestore if needed
+    UserModel customer = Dummydata.customer1;
+    UserModel provider = Dummydata.provider1;
+
+    BookingModel newBooking = BookingModel(
+      id: Uuid().v4(),
+      customerId: customer.id,
+      providerId: provider.id,
+      serviceId: widget.service.id,
+      serviceName: widget.service.title,
+      customerName: customer.fullName,
+      providerName: provider.fullName,
+      bookingDate: DateTime.now(),
+      status: "pending",
+      amount: widget.service.price,
+      createdAt: DateTime.timestamp(),
+      notes: _detailsController.text,
+    );
+    await FirestoreService().createBooking(newBooking);
+    setState(() => isLoading = false);
 
     Navigator.pop(context);
     ScaffoldMessenger.of(
@@ -190,17 +215,19 @@ class _BookingScreenState extends State<BookingScreen> {
             const SizedBox(height: 32),
 
             // Confirm Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _confirmBooking,
-                child: const Text("Confirm Booking"),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 16),
+            isLoading
+                ? CircularProgressIndicator()
+                : SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _confirmBooking,
+                    child: const Text("Confirm Booking"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      textStyle: const TextStyle(fontSize: 16),
+                    ),
+                  ),
                 ),
-              ),
-            ),
           ],
         ),
       ),

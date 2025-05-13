@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String userId = AuthService().getUserId()!;
-  UserModel? user = Dummydata().customer;
+  UserModel? user = Dummydata.customer1;
   List<ServiceModel> services = Dummydata.dummyServices;
   void getUserDetails() async {
     try {

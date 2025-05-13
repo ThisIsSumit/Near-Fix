@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:near_fix/models/booking_model.dart';
 import 'package:near_fix/models/service_model.dart';
 import 'package:near_fix/screens/customer/booking_screen.dart';
 
@@ -9,6 +10,22 @@ class ServiceDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void _navigateToBookingScreen(ServiceModel service) async {
+      final BookingModel? newBooking = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BookingScreen(service: service),
+        ),
+      );
+
+      if (newBooking != null) {
+        // Do something with the newBooking
+        print('Booking received: ${newBooking.id}');
+      } else {
+        print('Booking was cancelled or not completed.');
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text(service.title)),
       body: SingleChildScrollView(
@@ -88,13 +105,7 @@ class ServiceDetailScreen extends StatelessWidget {
                   Center(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => BookingScreen(service: service),
-                          ),
-                        );
+                        _navigateToBookingScreen(service);
                       },
                       icon: const Icon(Icons.calendar_month),
                       label: const Text("Book Now"),
