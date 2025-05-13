@@ -11,16 +11,16 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
- final TextEditingController _nameController = TextEditingController();
- final TextEditingController _emailController = TextEditingController();
- final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String _userType = 'customer';
   bool isLoading = false;
 
-  Future<void> _signup()async{
-    try{
-      if(!_formKey.currentState!.validate()) {
+  Future<void> _signup() async {
+    try {
+      if (!_formKey.currentState!.validate()) {
         return;
       }
       setState(() {
@@ -29,11 +29,11 @@ class _SignupScreenState extends State<SignupScreen> {
       await AuthService().signUp(
         _emailController.text,
         _passwordController.text,
-        _userType == 'customer',
+        _userType,
         _phoneController.text,
       );
       String userId = AuthService().getUserId()!;
-      
+
       if (_userType == 'customer') {
         Navigator.pushReplacementNamed(context, '/customer-home');
       } else {
@@ -43,9 +43,8 @@ class _SignupScreenState extends State<SignupScreen> {
       // Handle error
       print('Signup error: $e');
     }
-
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,10 +53,7 @@ class _SignupScreenState extends State<SignupScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.textPrimary,
-          ),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -87,7 +83,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   SizedBox(height: 32),
-                  
+
                   // User Type Selection
                   Container(
                     padding: EdgeInsets.all(16),
@@ -150,7 +146,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   SizedBox(height: 24),
-                  
+
                   // Name Field
                   TextFormField(
                     controller: _nameController,
@@ -159,7 +155,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                     decoration: InputDecoration(
                       hintText: "Full Name",
-                      prefixIcon: Icon(Icons.person_outline, color: AppColors.textLight),
+                      prefixIcon: Icon(
+                        Icons.person_outline,
+                        color: AppColors.textLight,
+                      ),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -169,7 +168,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                   ),
                   SizedBox(height: 16),
-                  
+
                   // Email Field
                   TextFormField(
                     controller: _emailController,
@@ -178,7 +177,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                     decoration: InputDecoration(
                       hintText: "Email",
-                      prefixIcon: Icon(Icons.email_outlined, color: AppColors.textLight),
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: AppColors.textLight,
+                      ),
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
@@ -189,7 +191,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                   ),
                   SizedBox(height: 16),
-                  
+
                   // Phone Field
                   TextFormField(
                     controller: _phoneController,
@@ -198,7 +200,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                     decoration: InputDecoration(
                       hintText: "Phone Number",
-                      prefixIcon: Icon(Icons.phone_outlined, color: AppColors.textLight),
+                      prefixIcon: Icon(
+                        Icons.phone_outlined,
+                        color: AppColors.textLight,
+                      ),
                     ),
                     keyboardType: TextInputType.phone,
                     validator: (value) {
@@ -209,7 +214,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                   ),
                   SizedBox(height: 16),
-                  
+
                   // Password Field
                   TextFormField(
                     controller: _passwordController,
@@ -218,8 +223,14 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                     decoration: InputDecoration(
                       hintText: "Password",
-                      prefixIcon: Icon(Icons.lock_outline, color: AppColors.textLight),
-                      suffixIcon: Icon(Icons.visibility_off_outlined, color: AppColors.textLight),
+                      prefixIcon: Icon(
+                        Icons.lock_outline,
+                        color: AppColors.textLight,
+                      ),
+                      suffixIcon: Icon(
+                        Icons.visibility_off_outlined,
+                        color: AppColors.textLight,
+                      ),
                     ),
                     obscureText: true,
                     validator: (value) {
@@ -230,16 +241,18 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                   ),
                   SizedBox(height: 32),
-                  
+
                   // Signup Button
-                 isLoading?CircularProgressIndicator(): CustomButton(
-                    text: "Create Account",
-                    onPressed: () {
-                      _signup();
-                    },
-                  ),
+                  isLoading
+                      ? CircularProgressIndicator()
+                      : CustomButton(
+                        text: "Create Account",
+                        onPressed: () {
+                          _signup();
+                        },
+                      ),
                   SizedBox(height: 24),
-                  
+
                   // Login Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

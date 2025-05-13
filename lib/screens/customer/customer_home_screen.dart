@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:near_fix/models/user_model.dart';
+import 'package:near_fix/provider/dummydata.dart';
 import 'package:near_fix/screens/customer/pages/explore_service_page.dart';
 import 'package:near_fix/screens/customer/pages/customer_home_page.dart';
+import 'package:near_fix/screens/customer/pages/bookings_page.dart';
+import 'package:near_fix/screens/shared/profile_screen.dart';
+import 'package:near_fix/services/auth__service.dart';
+import 'package:near_fix/services/firestore_service.dart';
 
 class CustomerHomeScreen extends StatefulWidget {
   const CustomerHomeScreen({Key? key}) : super(key: key);
@@ -11,13 +17,37 @@ class CustomerHomeScreen extends StatefulWidget {
 
 class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   int _selectedIndex = 0;
+  UserModel? user = Dummydata().customer;
+  Future<void> fetchUser() async {
+    try {
+      String userId = AuthService().getUserId()!;
+      user = await FirestoreService().getUser(userId);
+    } catch (e) {
+      print("Error in fetching the user $e");
+    }
+  }
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    const ExploreServicesPage(),
-    // const BookingsPage(),
-    // const ProfilePage(),
-  ];
+  @override
+  void initState() {
+    fetchUser().then((_) {
+      setState(() {
+        _pages = [
+          HomePage(),
+          ExploreServicesPage(),
+          BookingsPage(),
+          ProfileScreen(user: user),
+        ];
+      });
+    });
+    super.initState();
+  }
+
+  late List<Widget> _pages;
+  // fetch user
+
+  // bookings
+
+  // fetch geopoint
 
   @override
   Widget build(BuildContext context) {
@@ -59,5 +89,3 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
     );
   }
 }
-
-

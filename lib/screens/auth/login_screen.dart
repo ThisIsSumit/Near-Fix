@@ -34,11 +34,17 @@ class _LoginScreenState extends State<LoginScreen> {
         _passwordController.text,
       );
       String userId = AuthService().getUserId()!;
+      if (userId == null) {
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
       UserModel user = await FirestoreService().getUser(userId);
       setState(() {
         isLoading = false;
       });
-      if (user.isCustomer) {
+      if (user.userType == 'customer') {
         Navigator.pushReplacementNamed(context, '/customer-home');
       } else {
         Navigator.pushReplacementNamed(context, '/provider-home');

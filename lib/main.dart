@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
+import 'package:near_fix/screens/service_provider/provider_home_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/signup_screen.dart';
 import 'constants/app_colors.dart';
@@ -59,17 +61,14 @@ class NearFix extends StatelessWidget {
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
       ),
-      initialRoute: '/login',
+      initialRoute: '/customer-home',
       routes: {
         '/login': (context) => LoginScreen(),
         '/signup': (context) => SignupScreen(),
         '/customer-home': (context) => CustomerHomeScreen(),
-        // '/provider-home': (context) => ProviderHomeScreen(),
-        // '/service-detail': (context) => ServiceDetailScreen(),
-        // '/booking': (context) => BookingScreen(),
+        '/provider-home': (context) => ProviderHomeScreen(),
+
         // '/map': (context) => MapScreen(),
-        // '/profile': (context) => ProfileScreen(),
-        // '/bookings': (context) => BookingsScreen(),
       },
     );
   }

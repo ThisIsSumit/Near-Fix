@@ -1,7 +1,55 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:near_fix/models/service_model.dart';
+import 'package:near_fix/models/user_model.dart';
+import 'package:near_fix/provider/dummydata.dart';
+import 'package:near_fix/screens/customer/service_detail_screen.dart';
+import 'package:near_fix/services/auth__service.dart';
+import 'package:near_fix/services/firestore_service.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+//user , serivies list , service by category
+
+class _HomePageState extends State<HomePage> {
+  String userId = AuthService().getUserId()!;
+  UserModel? user = Dummydata().customer;
+  List<ServiceModel> services = Dummydata.dummyServices;
+  void getUserDetails() async {
+    try {
+      user = await FirestoreService().getUser(userId);
+      setState(() {});
+    } catch (e) {
+      print('Error fetching user details: $e');
+    }
+  }
+
+  Future<GeoPoint> fetchGeoPoints() async {
+    try {
+      return GeoPoint(0.0, 0.0);
+    } catch (e) {
+      print('Error fetching GeoPoint: $e');
+      throw Exception('Failed to fetch GeoPoint');
+    }
+  }
+
+  Future<void> fetchServices() async {
+    try {
+      services = await FirestoreService().getServices();
+    } catch (e) {
+      print("Error in fetching services");
+    }
+  }
+
+  @override
+  void initState() {
+    getUserDetails();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +66,8 @@ class HomePage extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Hello, Sumit",
+                      Text(
+                        "Hello, ${user?.fullName ?? ''}",
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -32,27 +80,18 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                   const CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.grey,
-                    child: Icon(Icons.person, color: Colors.white),
+                    radius: 25,
+                    backgroundColor: Color(0xFF4A80F0),
+                    child: Icon(
+                      Icons.person,
+                      size: 25,
+                      color: Color.fromARGB(255, 255, 255, 255),
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 24),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey.shade200),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: const TextField(
-                  decoration: InputDecoration(
-                    hintText: "Search services...",
-                    prefixIcon: Icon(Icons.search),
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
+
               const SizedBox(height: 24),
               const Text(
                 "Categories",
@@ -61,8 +100,9 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 16),
               SizedBox(
                 height: 110,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
                   children: [
                     _buildCategoryItem(
                       "Cleaning",
@@ -73,59 +113,25 @@ class HomePage extends StatelessWidget {
                       "Electrical",
                       Icons.electrical_services_outlined,
                     ),
-                    _buildCategoryItem("Tutoring", Icons.school_outlined),
-                    _buildCategoryItem("Moving", Icons.local_shipping_outlined),
-                    _buildCategoryItem("Gardening", Icons.yard_outlined),
                   ],
                 ),
               ),
               const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Popular Services",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  TextButton(onPressed: () {}, child: const Text("See All")),
-                ],
+              const Text(
+                "Popular Services",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              _buildServiceCard(
-                context,
-                "Home Cleaning",
-                "Professional cleaning services",
-                "4.8",
-                "\$25/hr",
-                Icons.cleaning_services_outlined,
-              ),
+              ...services.map((service) {
+                return Column(
+                  children: [
+                    _buildServiceCard(context, service),
+                    const SizedBox(height: 8),
+                  ],
+                );
+              }).toList(),
+
               const SizedBox(height: 16),
-              _buildServiceCard(
-                context,
-                "Plumbing Repairs",
-                "Fix leaks, clogs, and installations",
-                "4.7",
-                "\$45/hr",
-                Icons.plumbing_outlined,
-              ),
-              const SizedBox(height: 16),
-              _buildServiceCard(
-                context,
-                "Electrical Repairs",
-                "Installations and troubleshooting",
-                "4.9",
-                "\$50/hr",
-                Icons.electrical_services_outlined,
-              ),
-              const SizedBox(height: 16),
-              _buildServiceCard(
-                context,
-                "Math Tutoring",
-                "K-12 and college level math",
-                "4.8",
-                "\$35/hr",
-                Icons.school_outlined,
-              ),
             ],
           ),
         ),
@@ -159,20 +165,26 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceCard(
-    BuildContext context,
-    String title,
-    String description,
-    String rating,
-    String price,
-    IconData icon,
-  ) {
+  Widget _buildServiceCard(BuildContext context, ServiceModel service) {
+    IconData icon = Icons.abc;
+    if (service.category == 'Cleaning') {
+      icon = Icons.cleaning_services_outlined;
+    } else if (service.category == 'Plumbing') {
+      icon = Icons.plumbing_outlined;
+    } else {
+      icon = Icons.electrical_services_outlined;
+    }
+
     return GestureDetector(
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const ServiceDetailScreen()),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return ServiceDetailScreen(service: service);
+            },
+          ),
+        );
       },
       child: Container(
         decoration: BoxDecoration(
@@ -205,7 +217,7 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    service.title,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -213,34 +225,10 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    description,
+                    service.description,
                     style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                   ),
                   const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(Icons.star, color: Colors.amber, size: 16),
-                      const SizedBox(width: 4),
-                      Text(
-                        rating,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      const Icon(
-                        Icons.location_on_outlined,
-                        color: Colors.grey,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        "5.2 miles",
-                        style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
@@ -248,7 +236,7 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  price,
+                  service.price.toString() + "/" + service.priceType,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

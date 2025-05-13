@@ -1,70 +1,73 @@
-import 'package:near_fix/models/booking_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
   final String id;
-  final String name;
+  final String fullName;
   final String email;
   final String phoneNumber;
-  final String? address;
-  final String? profilePictureUrl;
-  final bool isCustomer;
-  final List<BookingModel> bookings;
-  //coordinates for map
-  final double? latitude;
-  final double? longitude;
-  final double? rating;
-  String? serviceProvided;
+  final String location;
+  final String userType;
+  final String? profileImageUrl;
+  final DateTime createdAt;
+  final GeoPoint? coordinates;
 
   UserModel({
     required this.id,
-    required this.name,
+    required this.fullName,
     required this.email,
     required this.phoneNumber,
-    this.address,
-    this.profilePictureUrl,
-    required this.isCustomer,
-    required this.bookings,
-    this.latitude,
-    this.longitude,
-    this.rating,
-    this.serviceProvided,
+    required this.location,
+    required this.userType,
+    this.profileImageUrl,
+    required this.createdAt,
+    this.coordinates,
   });
 
-  factory UserModel.fromMap(Map<String, dynamic> map) {
+  factory UserModel.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return UserModel(
-      id: map['id'] as String? ?? '',
-      name: map['name'] as String? ?? '',
-      email: map['email'] as String? ?? '',
-      phoneNumber: map['phoneNumber'],
-      address: map['address'] as String?,
-      profilePictureUrl: map['profilePictureUrl'] as String?,
-      isCustomer: map['isCustomer'] as bool? ?? false,
-      bookings:
-          (map['bookings'] as List<dynamic>?)
-              ?.map((booking) => BookingModel.fromMap(booking))
-              .toList() ??
-          [],
-      latitude: map['latitude'] as double?,
-      longitude: map['longitude'] as double?,
-      rating: map['rating'] as double?,
-      serviceProvided: map['serviceProvided'] as String?,
+      id: doc.id,
+      fullName: data['fullName'] ?? '',
+      email: data['email'] ?? '',
+      phoneNumber: data['phoneNumber'] ?? '',
+      location: data['location'] ?? '',
+      userType: data['userType'] ?? 'customer',
+      profileImageUrl: data['profileImageUrl'],
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      coordinates: data['coordinates'],
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toFirestore() {
     return {
-      'id': id,
-      'name': name,
+      'fullName': fullName,
       'email': email,
       'phoneNumber': phoneNumber,
-      'address': address,
-      'profilePictureUrl': profilePictureUrl,
-      'isCustomer': isCustomer,
-      'bookings': bookings.map((booking) => booking.toMap()).toList(),
-      'latitude': latitude,
-      'longitude': longitude,
-      'rating': rating,
-      'serviceProvided': serviceProvided,
+      'location': location,
+      'userType': userType,
+      'profileImageUrl': profileImageUrl,
+      'createdAt': createdAt,
+      'coordinates': coordinates,
     };
+  }
+
+  UserModel copyWith({
+    String? fullName,
+    String? phoneNumber,
+    String? location,
+    String? profileImageUrl,
+    GeoPoint? coordinates,
+  }) {
+    return UserModel(
+      id: this.id,
+      fullName: fullName ?? this.fullName,
+      email: this.email,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      location: location ?? this.location,
+      userType: this.userType,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
+      createdAt: this.createdAt,
+      coordinates: coordinates ?? this.coordinates,
+    );
   }
 }

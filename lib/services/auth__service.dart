@@ -16,7 +16,7 @@ class AuthService {
   }
 
   //signup
-  Future<void> signUp(String email, String password, bool isCustomer, String phoneNumber) async {
+  Future<void> signUp(String email, String password, String  userType, String phoneNumber) async {
     try {
       await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -24,13 +24,16 @@ class AuthService {
       );
 
       User? user = _auth.currentUser;
-      UserModel userModel=  UserModel(
+      UserModel userModel= UserModel(
         id: user!.uid,
-        name: '',
+        fullName: '',
         email: email,
         phoneNumber: phoneNumber,
-        isCustomer: isCustomer,
-        bookings: [],
+        location: '',
+        userType: userType,
+        profileImageUrl: null,
+        createdAt: DateTime.now(),
+        coordinates: null,
       );
        await FirestoreService().saveUser(userModel);
 
