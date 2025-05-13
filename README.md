@@ -1,16 +1,27 @@
-# near_fix
+# 🔧 NearFix - Home Service Booking App
 
-A new Flutter project.
+NearFix is a Flutter-based mobile application that allows users to book essential home services such as plumbing, electrical work, and cleaning. It integrates with Firebase to manage real-time data for users, services, and bookings.
 
-## Getting Started
+## 📱 Features
 
-This project is a starting point for a Flutter application.
+- 🔍 Browse available home services
+- 🧰 View service details including price, category, and provider info
+- 📆 Book a service by selecting date, time, and issue description
+- 👨‍🔧 Distinction between customers and service providers
+- 🗂 User data managed via Firebase Firestore
+- 🔐 Secure data modeling and real-time updates
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 📦 Tech Stack
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Flutter**: UI Toolkit for building cross-platform apps
+- **Firebase Firestore**: Cloud NoSQL database for storing service and user data
+- **Cloud Functions (optional)**: For backend logic like notifications or booking updates
+- **GeoPoint**: For storing location data of users/providers (optional future expansion)
+
+---
+
+
+
+
