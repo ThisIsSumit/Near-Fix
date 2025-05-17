@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:near_fix/models/user_model.dart';
+import 'package:near_fix/provider/dummydata.dart';
+import 'package:near_fix/screens/service_provider/add_new_service.dart';
 
-// ignore: must_be_immutable
 class ProviderDashboard extends StatelessWidget {
   ProviderDashboard({required this.providerData, super.key});
 
-  Map<String, dynamic>? providerData;
+  final Map<String, dynamic>? providerData;
+  UserModel provider = Dummydata.provider1;
 
   Widget buildStatCard(String title, String value, Color color) {
     return Expanded(
@@ -35,98 +38,110 @@ class ProviderDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Dashboard",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
+    final String providerName = providerData?['providerName'] ?? 'Provider';
 
-            // 🔧 Booking Stats + Rating
-            Row(
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => AddServiceScreen(providerId: provider.id),
+            ),
+          );
+        },
+        backgroundColor: Colors.indigo,
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: Text('Add New Service', style: TextStyle(color: Colors.white)),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildStatCard(
-                  "Pending",
-                  providerData?['pendingBookingsCount'].toString() ?? '0',
-                  Colors.orange,
+                Text(
+                  "Welcome, $providerName 👋",
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                const SizedBox(width: 16),
-                buildStatCard(
-                  "Confirmed",
-                  providerData?['confirmedBookingsCount'].toString() ?? '0',
-                  Colors.blue,
+                const SizedBox(height: 8),
+                const Text(
+                  "Here’s a quick summary of your activity:",
+                  style: TextStyle(fontSize: 16, color: Colors.black54),
                 ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                buildStatCard(
-                  "Completed",
-                  providerData?['completedBookingsCount'].toString() ?? '0',
-                  Colors.green,
-                ),
-                const SizedBox(width: 16),
-                buildStatCard(
-                  "Services",
-                  providerData?['servicesCount'].toString() ?? '0',
-                  Colors.purple,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            // 🔧 Rating and Earnings
-            Row(
-              children: [
-                buildStatCard(
-                  "Ratinng",
-                  '⭐${providerData?['rating'] ?? 0.0}',
-                  Colors.amber,
-                ),
-                const SizedBox(width: 16),
-                buildStatCard(
-                  "Earnings",
-                  '₹${(providerData?['totalEarnings'] ?? 0.0).toStringAsFixed(2)}',
-                  Colors.teal,
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 24),
-            Text(
-              textAlign: TextAlign.center,
-              "Latest Reviews",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-
-            if ((providerData?['latestReviews'] as List?)?.isNotEmpty ?? false)
-              ...List.generate(
-                (providerData!['latestReviews'] as List).length,
-                (index) {
-                  final review = providerData!['latestReviews'][index];
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    child: ListTile(
-                      leading: const Icon(Icons.reviews),
-                      title: Text(review['comment'] ?? 'No comment'),
-                      subtitle: Text('By: ${review['userName'] ?? 'User'}'),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    buildStatCard(
+                      "Pending",
+                      providerData?['pendingBookingsCount'].toString() ?? '0',
+                      Colors.orange,
                     ),
-                  );
-                },
-              )
-            else
-              const Text("No reviews available."),
-
-            const SizedBox(height: 24),
-
-            // Dummy Booking Box
-          ],
+                    const SizedBox(width: 16),
+                    buildStatCard(
+                      "Confirmed",
+                      providerData?['confirmedBookingsCount'].toString() ?? '0',
+                      Colors.blue,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    buildStatCard(
+                      "Completed",
+                      providerData?['completedBookingsCount'].toString() ?? '0',
+                      Colors.green,
+                    ),
+                    const SizedBox(width: 16),
+                    buildStatCard(
+                      "Earnings",
+                      '₹${(providerData?['totalEarnings'] ?? 0.0).toStringAsFixed(2)}',
+                      Colors.teal,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 32),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.indigo.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    children: const [
+                      Text(
+                        "Keep up the great work! 🎉",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.indigo,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "Track your progress regularly and provide excellent service to boost your reputation.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black87),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 80),
+                Center(
+                  child: Text(
+                    "Powered by $providerName",
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

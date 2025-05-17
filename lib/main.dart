@@ -61,7 +61,7 @@ class NearFix extends StatelessWidget {
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
       ),
-      initialRoute: '/customer-home',
+      initialRoute: '/provider-home',
       routes: {
         '/login': (context) => LoginScreen(),
         '/signup': (context) => SignupScreen(),
