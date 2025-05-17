@@ -14,12 +14,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _emailController = TextEditingController();
-
   final TextEditingController _passwordController = TextEditingController();
-
+  String _userType = 'customer'; // Default selection
   bool isLoading = false;
+  bool _obscurePassword = true; // For password visibility toggle
 
   Future<void> _login(BuildContext context) async {
     try {
@@ -29,21 +28,45 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         isLoading = true;
       });
+
       await AuthService().signIn(
         _emailController.text,
         _passwordController.text,
       );
-      String userId = AuthService().getUserId()!;
+
+      String? userId = AuthService().getUserId();
       if (userId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed. Please try again.')),
+        );
         setState(() {
           isLoading = false;
         });
         return;
       }
-      UserModel user = await FirestoreService().getUser(userId);
+      UserModel user;
+      if (_userType == 'customer') {
+        user = await FirestoreService().getCustomer(userId);
+      } else {
+        user = await FirestoreService().getProvider(userId);
+      }
+
+      if (user.userType != _userType) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please select the correct account type.')),
+        );
+        
+        await AuthService().signOut();
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+
       setState(() {
         isLoading = false;
       });
+
       if (user.userType == 'customer') {
         Navigator.pushReplacementNamed(context, '/customer-home');
       } else {
@@ -51,6 +74,12 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       // Handle error
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Login error: ${e.toString()}')));
+      setState(() {
+        isLoading = false;
+      });
       print('Login error: $e');
     }
   }
@@ -107,12 +136,52 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 40),
 
+                  // User Type Selection
+                  Row(
+                    children: [
+                      // Customer option
+                      Expanded(
+                        child: RadioListTile<String>(
+                          title: Text(
+                            "Customer",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          value: 'customer',
+                          groupValue: _userType,
+                          activeColor: AppColors.primary,
+                          contentPadding: EdgeInsets.zero,
+                          onChanged: (value) {
+                            setState(() {
+                              _userType = value!;
+                            });
+                          },
+                        ),
+                      ),
+                      // Provider option
+                      Expanded(
+                        child: RadioListTile<String>(
+                          title: Text(
+                            "Service Provider",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          value: 'provider',
+                          groupValue: _userType,
+                          activeColor: AppColors.primary,
+                          contentPadding: EdgeInsets.zero,
+                          onChanged: (value) {
+                            setState(() {
+                              _userType = value!;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+
                   // Email Field
                   TextFormField(
                     controller: _emailController,
-                    onChanged: (value) {
-                      _emailController.text = value;
-                    },
                     decoration: InputDecoration(
                       hintText: "Email",
                       prefixIcon: Icon(
@@ -125,6 +194,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
                       }
+                      if (!RegExp(
+                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      ).hasMatch(value)) {
+                        return 'Please enter a valid email';
+                      }
                       return null;
                     },
                   ),
@@ -133,21 +207,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Password Field
                   TextFormField(
                     controller: _passwordController,
-                    onChanged: (value) {
-                      _passwordController.text = value;
-                    },
                     decoration: InputDecoration(
                       hintText: "Password",
                       prefixIcon: Icon(
                         Icons.lock_outline,
                         color: AppColors.textLight,
                       ),
-                      suffixIcon: Icon(
-                        Icons.visibility_off_outlined,
-                        color: AppColors.textLight,
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                        child: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          color: AppColors.textLight,
+                        ),
                       ),
                     ),
-                    obscureText: true,
+                    obscureText: _obscurePassword,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your password';
@@ -161,7 +241,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/forgot-password');
+                      },
                       child: Text(
                         "Forgot Password?",
                         style: TextStyle(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:near_fix/models/booking_model.dart';
+import 'package:near_fix/models/service_model.dart';
 import 'package:near_fix/models/user_model.dart';
 import 'package:near_fix/provider/dummydata.dart';
 import 'package:near_fix/screens/customer/pages/explore_service_page.dart';
@@ -8,6 +10,7 @@ import 'package:near_fix/screens/customer/pages/bookings_page.dart';
 import 'package:near_fix/screens/shared/profile_screen.dart';
 import 'package:near_fix/services/auth__service.dart';
 import 'package:near_fix/services/firestore_service.dart';
+import 'package:geolocator/geolocator.dart';
 
 class CustomerHomeScreen extends StatefulWidget {
   const CustomerHomeScreen({Key? key}) : super(key: key);
@@ -20,12 +23,22 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   int _selectedIndex = 0;
   UserModel? user = Dummydata.customer1;
   List<BookingModel> bookings = [];
+  List<ServiceModel>? services;
+  LatLng? _latLng;
   Future<void> fetchUser() async {
     try {
       String userId = AuthService().getUserId()!;
-      user = await FirestoreService().getUser(userId);
+      user = await FirestoreService().getCustomer(userId);
     } catch (e) {
       print("Error in fetching the user $e");
+    }
+  }
+
+  Future<void> fetchServices() async {
+    try {
+      services = await FirestoreService().getServices();
+    } catch (e) {
+      print("Error in fetching services");
     }
   }
 
@@ -41,12 +54,12 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
         ];
       });
     });
+    fetchBookings();
+    getCurrentLatLag();
     super.initState();
   }
 
   late List<Widget> _pages;
-  // fetch user
-
   // bookings
   Future<void> fetchBookings() async {
     try {
@@ -62,11 +75,47 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   }
 
   // fetch geopoint
+  Future<void> getCurrentLatLag() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        print('Location services are disabled.');
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          print('Location permissions are denied');
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        print('Location permissions are permanently denied.');
+        return;
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      setState(() {
+        _latLng = LatLng(position.latitude, position.longitude);
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body:
+          (_pages == null)
+              ? CircularProgressIndicator()
+              : _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:near_fix/models/user_model.dart';
 import 'package:near_fix/models/service_model.dart';
 import 'package:near_fix/models/booking_model.dart';
@@ -7,22 +8,28 @@ import 'package:near_fix/models/booking_model.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  static const String _usersPath = 'users';
+  static const String _customersPath = 'customers';
+  static const String _providersPath = 'providers';
   static const String _servicesPath = 'services';
   static const String _bookingsPath = 'bookings';
 
   Future<void> saveUser(UserModel user) async {
     try {
-      await _db.collection(_usersPath).doc(user.id).set(user.toFirestore());
+      await _db
+          .collection(
+            user.userType == 'customer' ? _customersPath : _providersPath,
+          )
+          .doc(user.id)
+          .set(user.toFirestore());
     } catch (e) {
       _logError('saveUser', e);
       rethrow;
     }
   }
 
-  Future<UserModel> getUser(String userId) async {
+  Future<UserModel> getCustomer(String userId) async {
     try {
-      final doc = await _db.collection(_usersPath).doc(userId).get();
+      final doc = await _db.collection(_customersPath).doc(userId).get();
       if (doc.exists == false) {
         throw Exception('User not found');
       }
@@ -32,10 +39,22 @@ class FirestoreService {
       rethrow;
     }
   }
+   Future<UserModel> getProvider(String userId) async {
+    try {
+      final doc = await _db.collection(_providersPath).doc(userId).get();
+      if (doc.exists == false) {
+        throw Exception('Provider not found');
+      }
+      return UserModel.fromFirestore(doc);
+    } catch (e) {
+      _logError('getProvider', e);
+      rethrow;
+    }
+  }
 
   bool _isInRange(
-    GeoPoint point,
-    GeoPoint center,
+    LatLng point,
+    LatLng center,
     double latRange,
     double lngRange,
   ) {
@@ -72,66 +91,12 @@ class FirestoreService {
     }
   }
 
-  Future<void> updateService(ServiceModel service) async {
-    try {
-      await _db
-          .collection(_servicesPath)
-          .doc(service.id)
-          .update(service.toFirestore());
-    } catch (e) {
-      _logError('updateService', e);
-      rethrow;
-    }
-  }
-
   Future<ServiceModel?> getService(String serviceId) async {
     try {
       final doc = await _db.collection(_servicesPath).doc(serviceId).get();
       return doc.exists ? ServiceModel.fromFirestore(doc) : null;
     } catch (e) {
       _logError('getService', e);
-      rethrow;
-    }
-  }
-
-  Future<void> deleteService(String serviceId) async {
-    try {
-      final activeBookings =
-          await _db
-              .collection(_bookingsPath)
-              .where('serviceId', isEqualTo: serviceId)
-              .where('status', whereIn: ['pending', 'confirmed'])
-              .get();
-
-      if (activeBookings.docs.isNotEmpty) {
-        throw Exception('Cannot delete service with active bookings');
-      }
-
-      final batch = _db.batch();
-
-      batch.delete(_db.collection(_servicesPath).doc(serviceId));
-
-      await batch.commit();
-    } catch (e) {
-      _logError('deleteService', e);
-      rethrow;
-    }
-  }
-
-  Future<List<ServiceModel>> getServicesByCategory(String category) async {
-    try {
-      final snapshot =
-          await _db
-              .collection(_servicesPath)
-              .where('category', isEqualTo: category)
-              .orderBy('rating', descending: true)
-              .get();
-
-      return snapshot.docs
-          .map((doc) => ServiceModel.fromFirestore(doc))
-          .toList();
-    } catch (e) {
-      _logError('getServicesByCategory', e);
       rethrow;
     }
   }
@@ -156,7 +121,7 @@ class FirestoreService {
     }
   }
 
-  Future<List<ServiceModel>> getNearbyServices(GeoPoint location) async {
+  Future<List<ServiceModel>> getNearbyServices(LatLng location) async {
     try {
       final snapshot = await _db.collection(_servicesPath).get();
       final services =
@@ -262,9 +227,9 @@ class FirestoreService {
       final service = await getService(booking.serviceId);
       if (service == null) throw Exception('Service not found');
 
-      final provider = await getUser(booking.providerId);
+      final provider = await getProvider(booking.providerId);
 
-      final customer = await getUser(booking.customerId);
+      final customer = await getCustomer(booking.customerId);
 
       return {
         'booking': booking,
@@ -283,7 +248,7 @@ class FirestoreService {
       final service = await getService(serviceId);
       if (service == null) throw Exception('Service not found');
 
-      final provider = await getUser(service.providerId);
+      final provider = await getProvider(service.providerId);
       if (provider == null) throw Exception('Provider not found');
 
       return {'service': service, 'provider': provider};

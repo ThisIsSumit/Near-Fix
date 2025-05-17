@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:near_fix/models/booking_model.dart';
 import 'package:near_fix/models/service_model.dart';
 import 'package:near_fix/models/user_model.dart';
@@ -13,7 +13,7 @@ class Dummydata {
     userType: 'customer',
     profileImageUrl: 'https://example.com/profile_images/johndoe.jpg',
     createdAt: DateTime.now(),
-    coordinates: GeoPoint(40.7128, -74.0060), // New York
+    coordinates: LatLng(40.7128, -74.0060), // New York
   );
 
   static UserModel provider1 = UserModel(
@@ -26,7 +26,7 @@ class Dummydata {
     profileImageUrl: 'https://example.com/profile_images/alicesmith.jpg',
     servicesIds: ['service1', 'service3'],
     createdAt: DateTime.now(),
-    coordinates: GeoPoint(37.7749, -122.4194), // San Francisco
+    coordinates: LatLng(37.7749, -122.4194), // San Francisco
   );
 
   static UserModel customer2 = UserModel(
@@ -38,7 +38,7 @@ class Dummydata {
     userType: 'customer',
     profileImageUrl: 'https://example.com/profile_images/bobbrown.jpg',
     createdAt: DateTime.now(),
-    coordinates: GeoPoint(41.8781, -87.6298), // Chicago
+    coordinates: LatLng(41.8781, -87.6298), // Chicago
   );
 
   static UserModel provider2 = UserModel(
@@ -51,7 +51,7 @@ class Dummydata {
     profileImageUrl: 'https://example.com/profile_images/sparkle.jpg',
     servicesIds: ['service1', 'service2'],
     createdAt: DateTime.now(),
-    coordinates: GeoPoint(28.6139, 77.2090), // Delhi
+    coordinates: LatLng(28.6139, 77.2090), // Delhi
   );
 
   static List<ServiceModel> dummyServices = [
@@ -64,7 +64,7 @@ class Dummydata {
           'Full deep-cleaning of home including floor, windows, kitchen, and bathrooms.',
       price: 90.0,
       priceType: 'hourly',
-      location: GeoPoint(28.6139, 77.2090), // Delhi
+      location: LatLng(28.6139, 77.2090), // Delhi
       address: 'A-123, Rajpath Marg, New Delhi',
       createdAt: DateTime(2025, 5, 12),
     ),
@@ -77,7 +77,7 @@ class Dummydata {
           'Fix leakages, pipe replacements, tap installations, and more.',
       price: 120.0,
       priceType: 'fixed',
-      location: GeoPoint(37.7749, -122.4194), // San Francisco
+      location: LatLng(37.7749, -122.4194), // San Francisco
       address: 'Flat 501, Ocean Heights, San Francisco',
       createdAt: DateTime(2025, 5, 13),
     ),
@@ -90,7 +90,7 @@ class Dummydata {
           'Complete wiring and electrical maintenance service for homes.',
       price: 150.0,
       priceType: 'hourly',
-      location: GeoPoint(37.7749, -122.4194), // San Francisco
+      location: LatLng(37.7749, -122.4194), // San Francisco
       address: '221B, MG Road, San Francisco',
       createdAt: DateTime(2025, 5, 14),
     ),

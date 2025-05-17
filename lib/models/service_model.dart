@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:latlong2/latlong.dart';
 
 class ServiceModel {
   final String id;
@@ -8,7 +9,7 @@ class ServiceModel {
   final String description;
   final double price;
   final String priceType;
-  final GeoPoint location;
+  final LatLng location;
   final String address;
   final DateTime createdAt;
 
@@ -22,7 +23,6 @@ class ServiceModel {
     required this.priceType,
     required this.location,
     required this.address,
-   
     required this.createdAt,
   });
 
@@ -36,7 +36,7 @@ class ServiceModel {
       description: data['description'] ?? '',
       price: (data['price'] ?? 0).toDouble(),
       priceType: data['priceType'] ?? 'hourly',
-      location: data['location'] ?? const GeoPoint(0, 0),
+      location: data['location'] ?? const LatLng(0, 0),
       address: data['address'] ?? '',
     
       createdAt: (data['createdAt'] as Timestamp).toDate(),

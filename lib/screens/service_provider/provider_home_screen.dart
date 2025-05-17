@@ -27,7 +27,7 @@ class _ProviderHomeScreenState extends State<ProviderHomeScreen> {
   Future<void> fetchUser() async {
     try {
       String userId = AuthService().getUserId()!;
-      provider = await FirestoreService().getUser(userId);
+      provider = await FirestoreService().getProvider(userId);
       if (provider == null) {
         throw Exception("Provider not found");
       }

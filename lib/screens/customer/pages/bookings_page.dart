@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:near_fix/models/booking_model.dart';
-import 'package:near_fix/provider/dummydata.dart';
 import 'package:intl/intl.dart';
 
 class BookingsPage extends StatelessWidget {

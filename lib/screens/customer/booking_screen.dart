@@ -83,7 +83,7 @@ class _BookingScreenState extends State<BookingScreen> {
     BookingModel newBooking = BookingModel(
       id: Uuid().v4(),
       customerId: customer.id,
-      providerId: provider.id,
+      providerId: widget.service.providerId,
       serviceId: widget.service.id,
       serviceName: widget.service.title,
       customerName: customer.fullName,

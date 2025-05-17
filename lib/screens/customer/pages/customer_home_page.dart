@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
-//user , serivies list , service by category
+
 
 class _HomePageState extends State<HomePage> {
   String userId = AuthService().getUserId()!;
@@ -21,21 +21,14 @@ class _HomePageState extends State<HomePage> {
   List<ServiceModel> services = Dummydata.dummyServices;
   void getUserDetails() async {
     try {
-      user = await FirestoreService().getUser(userId);
+      user = await FirestoreService().getCustomer(userId);
       setState(() {});
     } catch (e) {
       print('Error fetching user details: $e');
     }
   }
 
-  Future<GeoPoint> fetchGeoPoints() async {
-    try {
-      return GeoPoint(0.0, 0.0);
-    } catch (e) {
-      print('Error fetching GeoPoint: $e');
-      throw Exception('Failed to fetch GeoPoint');
-    }
-  }
+
 
   Future<void> fetchServices() async {
     try {

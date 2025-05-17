@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:latlong2/latlong.dart';
 
 class UserModel {
   final String id;
@@ -9,7 +10,7 @@ class UserModel {
   final String userType;
   final String? profileImageUrl;
   final DateTime createdAt;
-  final GeoPoint? coordinates;
+  final LatLng? coordinates;
 
   List<String>? servicesIds = [];
 
@@ -60,7 +61,7 @@ class UserModel {
     String? phoneNumber,
     String? location,
     String? profileImageUrl,
-    GeoPoint? coordinates,
+    LatLng? coordinates,
   }) {
     return UserModel(
       id: this.id,
