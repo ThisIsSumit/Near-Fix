@@ -3,7 +3,6 @@ import 'package:near_fix/models/booking_model.dart';
 import 'package:near_fix/models/service_model.dart';
 import 'package:near_fix/models/user_model.dart';
 import 'package:near_fix/provider/dummydata.dart';
-import 'package:near_fix/services/auth__service.dart';
 import 'package:near_fix/services/firestore_service.dart';
 import 'package:uuid/uuid.dart';
 

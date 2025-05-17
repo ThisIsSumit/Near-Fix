@@ -21,14 +21,14 @@ class CustomerHomeScreen extends StatefulWidget {
 
 class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   int _selectedIndex = 0;
-  UserModel? user = Dummydata.customer1;
+  UserModel user = Dummydata.customer1;
   List<BookingModel> bookings = [];
   List<ServiceModel>? services;
   LatLng? _latLng;
   Future<void> fetchUser() async {
     try {
-      String userId = AuthService().getUserId()!;
-      user = await FirestoreService().getCustomer(userId);
+      //  String userId = AuthService().getUserId()!;
+      // user = await FirestoreService().getCustomer(userId);
     } catch (e) {
       print("Error in fetching the user $e");
     }
@@ -44,31 +44,33 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
 
   @override
   void initState() {
-    fetchUser().then((_) {
+    super.initState();
+
+    Future.wait([getCurrentLatLag(), fetchUser(), fetchBookings()]).then((_) {
       setState(() {
         _pages = [
           HomePage(),
-          ExploreServicesPage(),
+          ExploreServicesPage(userLatLng: _latLng ?? LatLng(0, 0)),
           BookingsPage(bookings: bookings),
           ProfileScreen(user: user),
         ];
       });
     });
-    fetchBookings();
-    getCurrentLatLag();
-    super.initState();
   }
 
   late List<Widget> _pages;
   // bookings
   Future<void> fetchBookings() async {
     try {
-      String userId = user!.id;
-      bookings = await FirestoreService().getBookings(customerId: userId);
-      if (bookings == null || bookings.isEmpty) {
-        bookings = [];
-      }
-      setState(() {});
+      String userId = user.id;
+      var fetchedbookings = await FirestoreService().getBookings(
+        customerId: userId,
+      );
+
+      setState(() {
+        bookings = fetchedbookings;
+        print(" bookings  ${bookings.length} ");
+      });
     } catch (e) {
       print("Error in fetching bookings $e");
     }
@@ -103,6 +105,8 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
 
       setState(() {
         _latLng = LatLng(position.latitude, position.longitude);
+
+        print(" coordinates  ${_latLng} ");
       });
     } catch (e) {
       print(e);

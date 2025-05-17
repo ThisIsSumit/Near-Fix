@@ -3,7 +3,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 class ExploreServicesPage extends StatelessWidget {
-  const ExploreServicesPage({Key? key}) : super(key: key);
+  ExploreServicesPage({required this.userLatLng, Key? key}) : super(key: key);
+
+  LatLng userLatLng;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class ExploreServicesPage extends StatelessWidget {
 
                 child: const TextField(
                   decoration: InputDecoration(
-                    hintText: "Search location...",
+                    hintText: "Search Services...",
                     prefixIcon: Icon(Icons.search),
                     border: InputBorder.none,
                   ),
@@ -44,9 +46,7 @@ class ExploreServicesPage extends StatelessWidget {
                 height: MediaQuery.of(context).size.height / 3,
 
                 child: FlutterMap(
-                  options: MapOptions(
-                    initialCenter: LatLng(37.7749, -122.4194),
-                  ),
+                  options: MapOptions(initialCenter: userLatLng),
                   children: [
                     TileLayer(
                       urlTemplate:
@@ -58,7 +58,7 @@ class ExploreServicesPage extends StatelessWidget {
                         Marker(
                           width: 80.0,
                           height: 80.0,
-                          point: LatLng(37.7749, -122.4194),
+                          point: userLatLng,
                           child: Icon(
                             Icons.location_on,
                             color: Colors.blue,

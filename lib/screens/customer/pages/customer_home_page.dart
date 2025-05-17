@@ -14,33 +14,21 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-
 class _HomePageState extends State<HomePage> {
-  String userId = AuthService().getUserId()!;
+  // String userId = AuthService().getUserId()!;
   UserModel? user = Dummydata.customer1;
   List<ServiceModel> services = Dummydata.dummyServices;
-  void getUserDetails() async {
-    try {
-      user = await FirestoreService().getCustomer(userId);
-      setState(() {});
-    } catch (e) {
-      print('Error fetching user details: $e');
-    }
-  }
 
-
-
-  Future<void> fetchServices() async {
-    try {
-      services = await FirestoreService().getServices();
-    } catch (e) {
-      print("Error in fetching services");
-    }
-  }
+  // Future<void> fetchServices() async {
+  //   try {
+  //     services = await FirestoreService().getServices();
+  //   } catch (e) {
+  //     print("Error in fetching services");
+  //   }
+  // }
 
   @override
   void initState() {
-    getUserDetails();
     super.initState();
   }
 
