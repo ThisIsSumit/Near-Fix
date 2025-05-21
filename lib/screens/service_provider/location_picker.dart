@@ -18,8 +18,8 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
       appBar: AppBar(title: const Text('Pick a Location')),
       body: FlutterMap(
         options: MapOptions(
-          initialCenter: LatLng(20.5937, 78.9629), // Center of India
-          minZoom: 5,
+          initialCenter: LatLng(20.5937, 78.9629), 
+          minZoom: 10,
           onTap: (tapPosition, latlng) {
             setState(() {
               _selectedLocation = latlng;

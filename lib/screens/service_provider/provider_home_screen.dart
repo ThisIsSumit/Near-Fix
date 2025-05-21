@@ -68,7 +68,7 @@ class _ProviderHomeScreenState extends State<ProviderHomeScreen> {
 
   @override
   void initState() {
-    fetchUser().then((_) {
+    Future.wait([fetchRequests()]).then((_) {
       setState(() {
         _pages = [
           ProviderDashboard(providerData: providerDashboardData),
@@ -80,7 +80,7 @@ class _ProviderHomeScreenState extends State<ProviderHomeScreen> {
         ];
       });
     });
-    fetchRequests();
+
     super.initState();
   }
 
